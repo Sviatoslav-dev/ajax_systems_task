@@ -12,26 +12,25 @@ async def create_resp(req):
     resp = {'request_id': req['request_id']}
     data = req['data']
     data = data.split('%%')
-    for d in data:
-        d_splited = d.split('%')
-        print(d_splited)
-        d_key = d_splited[0]
-        d_values = d_splited[1:]
-        d_value = dict(zip(d_values[0::2], d_values[1::2]))
-        resp[d_key] = d_value
+    for entity in data:
+        entity_splited = entity.split('%')
+        print(entity_splited)
+        entity_key = entity_splited[0]
+        d_value = entity_splited[1:]
+        d_value = dict(zip(d_value[0::2], d_value[1::2]))
+        resp[entity_key] = d_value
     return resp
 
 
 async def parce_req(req):
     get = str(req).split(' ')[1][2:].split('&')
-    res = {rec.split('=')[0]: rec.split('=')[1] for rec in get}
-    return res
+    return {rec.split('=')[0]: rec.split('=')[1] for rec in get}
 
 
 async def echo_server(reader, writer):
     req = await reader.read(100)
     print(req)
-    # await wait(random.randint(1, 5))
+    await wait(random.randint(1, 5))
 
     resp = await create_resp(await parce_req(req))
 
